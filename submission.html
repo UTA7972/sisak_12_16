@@ -1,0 +1,182 @@
+<!--
+この中はコメントアウト可能(htmlに限る)
+
+今回は仕様をここに目盛る
+  ぱっと見はただのwebページ
+  姜先生の声に反応して
+  パスワード入力画面に移る
+  パスワードは姜先生の声で"開けゴマ"
+  開くと中のページが出る
+
+特別仕様(すべてが終わってからさらなるギミックを仕掛ける)
+  暗号を使用してページ内に問題文を作る
+  それに正解することをいうと
+  別のページに飛ぶ
+  別ページでは書き換えが可能
+
+記述方法について
+  htmlは今まで通り
+  javascriptは
+    <script>
+    // コードを記述する
+    </script>
+    コメントアウトは//
+  cssは三種類あるので以下を参照
+    https://techacademy.jp/magazine/4890
+    尚基本はヘッダなどのスペースに<style></style>で定義する
+
+ひな形の出どころ
+ https://style.potepan.com/articles/22142.html
+-->
+
+
+
+<!DOCTYPE html>
+<html lang="ja">
+ <head>
+
+ <meta charset="utf-8">
+ <title>情報を隠せ!暗号の作り方!</title>
+ <meta name="description" content="ディスクリプションを入力">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <link rel="stylesheet" href="style.css">
+ <!-- [if lt IE 9] -->
+ <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+ <script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
+ <!-- [endif] -->
+ <script src="main.js"></script>
+ </head>
+ <body>
+ <!----- heade <header>ヘッダー</header>
+ r----->
+
+ <nav>ナビ</nav>
+ <!----- /header ----->
+
+ <!----- main ----->
+ <article>
+ <h1>覚えやすい、複合しやすい暗号のアイデア</h1>
+ <section>
+ <h2>なぜ暗号を使うのか？</h2>
+ <p>　そもそもなぜ暗号を使うのか、それは人にはあまり見せたくない内容を簡単に隠して運ぶためです。あなたにも人には言えない事の一つや二つあると思います。</p>
+ <p>　それを思い出した時に、メモを取らずに覚えていようとしても忘れてしまう可能性があります。とはいえメモを取ってしまえば周辺にいる人に見られてしまいます。他の人に見られても大丈夫なようにメモを取る方法はないものか、、、</p>
+ <p>　そうだ、暗号を作ろう！となりますよね?(圧)というわけで本ページでは簡単にできる暗号の作り方を解説します。</p>
+
+ <!-- 英語を挿入
+ <blockquote lang="en">
+The lang attribute (in no namespace) specifies the primary language
+for the element's contents and for any of the element's attributes
+that contain text. Its value must be a valid BCP 47 language tag,...
+</blockquote>
+-->
+
+ </section>
+ </article>
+ <!----- /main ----->
+
+ <!----- footer ----->
+ <footer>フッター</footer>
+ <!----- /footer ----->
+ </body>
+</html>
+
+
+<style>
+  h2 {color: red;}
+  * {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  width: 100%;
+}
+
+html, body {
+  height: 100%;
+}
+
+canvas{
+  height: 100%;
+  width: 100%;
+}
+  </style>
+
+<script type="text/javascript">var livePatern = {
+  canvas: null,
+  context: null,
+  cols: 0,
+  rows: 0,
+  colors: [252, 251, 249, 248, 241, 240],
+  triangleColors: [],
+  destColors: [],
+
+  init: function(){
+    this.canvas = document.getElementById('canvas');
+    this.context = this.canvas.getContext('2d');
+    this.cols = Math.floor(document.body.clientWidth / 24);
+    this.rows = Math.floor(document.body.clientHeight / 24) + 1;
+
+    this.canvas.width = document.body.clientWidth;
+    this.canvas.height = document.body.clientHeight;
+
+    this.drawBackground();
+    this.animate();
+  },
+
+  drawTriangle: function(x, y, color, inverted){
+    inverted = inverted == undefined ? false : inverted;
+
+    this.context.beginPath();
+    this.context.moveTo(x, y);
+    this.context.lineTo(inverted ? x - 22 : x + 22, y + 11);
+    this.context.lineTo(x, y + 22);
+    this.context.fillStyle = "rgb("+color+","+color+","+color+")";
+    this.context.fill();
+    this.context.closePath();
+  },
+
+  getColor: function(){
+    return this.colors[(Math.floor(Math.random() * 6))];
+  },
+
+  drawBackground: function(){
+    var eq = null;
+    var x = this.cols;
+    var destY = 0;
+    var color, y;
+
+    while(x--){
+      eq = x % 2;
+      y = this.rows;
+
+      while(y--){
+        destY = Math.round((y-0.5) * 24);
+
+        this.drawTriangle(x * 24 + 2, eq == 1 ? destY : y * 24, this.getColor());
+        this.drawTriangle(x * 24, eq == 1 ? destY  : y * 24, this.getColor(), true);
+      }
+    }
+  },
+
+  animate: function(){
+    var me = this;
+
+    var x = Math.floor(Math.random() * this.cols);
+    var y = Math.floor(Math.random() * this.rows);
+    var eq = x % 2;
+
+    if (eq == 1) {
+      me.drawTriangle(x * 24, Math.round((y-0.5) * 24) , this.getColor(), true);
+    } else {
+      me.drawTriangle(x * 24 + 2, y * 24, this.getColor());
+    }
+
+    setTimeout(function(){
+      me.animate.call(me);
+    }, 10);
+  },
+};
+
+!function(){livePatern.init();}()</script>
+
+</script>
+<canvas id="canvas"></canvas>
